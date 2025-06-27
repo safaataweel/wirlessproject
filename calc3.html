@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Budget Calculator</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --pink: #FF85A2;
+      --pink-light: #FFB6C1;
+      --pink-dark: #E75480;
+      --purple: #B399D4;
+      --white: #FFFFFF;
+      --light-gray: #F8F9FA;
+      --gray: #E9ECEF;
+      --dark-gray: #6C757D;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--light-gray);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--pink-dark);
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--pink-dark);
+      border-bottom: 2px solid var(--pink-light);
+      padding-bottom: 0.5rem;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border-left: 4px solid var(--pink);
+    }
+ .result-box1 {
+  background-color: #ffc5cd;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  color: #E75480;
+  font-size: 1.1rem; /* حجم خط أكبر */
+  line-height: 1.5;
+  max-width: 100%; /* ما يخليش المحتوى يطلع برا */
+  overflow-wrap: break-word; /* يكسر الكلمات الطويلة */
+  box-sizing: border-box;
+}
+.result-details1 {
+  background-color: #ffc5cd;
+  padding: 1rem;
+  border-radius: 8px;
+  color: #E75480;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  word-break: break-word;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: 100%;
+}
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(255, 133, 162, 0.15);
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark-gray);
+    }
+
+    .input-field {
+      display: flex;
+      background-color: var(--gray);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #ddd;
+      transition: var(--transition);
+    }
+
+    .input-field:focus-within {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 2px rgba(255, 133, 162, 0.2);
+    }
+
+    input, select {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      background: var(--white);
+      border: none;
+      color: #333;
+      font-size: 1rem;
+      outline: none;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    select {
+      border-left: 1px solid #ddd;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E75480'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+    }
+
+    .btn {
+      background-color: var(--pink);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      background-color: var(--pink-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(231, 84, 128, 0.3);
+    }
+
+    .btn i {
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover i {
+      transform: translateX(3px);
+    }
+
+    .btn.enabled {
+      background-color: var(--pink-dark);
+    }
+
+    .result-box {
+      background-color: var(--gray);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      border-left: 3px solid var(--pink);
+    }
+
+    .result-label {
+      font-size: 0.9rem;
+      color: var(--dark-gray);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .result-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--pink-dark);
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: auto;
+      color: var(--dark-gray);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--gray);
+      font-weight: 400;
+    }
+
+    .footer-names {
+      margin-top: 0.5rem;
+    }
+
+    .name {
+      font-weight: 600;
+    }
+
+    .name-1 {
+      color: var(--pink-dark);
+    }
+
+    .name-2 {
+      color: var(--purple);
+    }
+
+    .unit-selector {
+      min-width: 80px;
+      background-color: var(--light-gray);
+      color: var(--pink-dark);
+      font-weight: 500;
+    }
+
+    @media (max-width: 900px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .container {
+        padding: 1.5rem 1rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      h2 {
+        font-size: 1.3rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+     
+
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Link Budget Calculator</h1>
+      <p class="subtitle">Compute transmitted and received power in wireless systems</p>
+    </header>
+
+    <main>
+      <div class="calculator-grid">
+        <div class="card">
+          <h2>Received Power (Pr)</h2>
+          <div class="input-group">
+            <label>Modulation</label>
+            <select id="modulation" class="input-field">
+              <option value="BPSK/QPSK">BPSK/QPSK</option>
+              <option value="8-PSK">8-PSK</option>
+              <option value="16-PSK">16-PSK</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>BER</label>
+            <input id="BER" class="input-field" placeholder="e.g. 0.001" type="number" step="0.00001">
+          </div>
+
+          <div class="input-group">
+            <label>M (Link Margin)</label>
+            <div class="input-field">
+              <input id="M" type="number" placeholder="Value">
+              <select id="unitM" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>T (Temperature)</label>
+            <div class="input-field">
+              <input id="T" type="number" placeholder="Value">
+              <select id="unitT" class="unit-selector">
+  <option value="K">Kelvin (K)</option>
+  <option value="C">Celsius (°C)</option>
+</select>
+
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Nf (Noise Figure)</label>
+            <div class="input-field">
+              <input id="Nf" type="number" placeholder="Value">
+              <select id="unitNf" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>R (Data Rate)</label>
+            <div class="input-field">
+              <input id="R" type="number" placeholder="Value">
+              <select id="unitR" class="unit-selector">
+                <option value="Mbps">Mbps</option>
+  <option value="Hz">Hz</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="calculatePrButton" class="btn" onclick="calculatePr()">
+            Calculate Pr <i class="fas fa-calculator"></i>
+          </button>
+        </div>
+
+        <div class="card">
+          <h2>Transmitted Power (Pt)</h2>
+          <div class="input-group">
+            <label>Pr (dB)</label>
+            <input id="Pr_dB" class="input-field" type="number" readonly>
+          </div>
+
+          <div class="input-group">
+            <label>Lp (Path Loss)</label>
+            <div class="input-field">
+              <input id="Lp" type="number" placeholder="Value">
+              <select id="unitLp" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Lf (Fading Margin)</label>
+            <div class="input-field">
+              <input id="Lf" type="number" placeholder="Value">
+              <select id="unitLf" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Lo (Other Losses)</label>
+            <div class="input-field">
+              <input id="Lo" type="number" placeholder="Value">
+              <select id="unitLo" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Fm (Miscellaneous Losses)</label>
+            <div class="input-field">
+              <input id="Fm" type="number" placeholder="Value">
+              <select id="unitFm" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Gt (Transmitter Gain)</label>
+            <div class="input-field">
+              <input id="Gt" type="number" placeholder="Value">
+              <select id="unitGt" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Gr (Receiver Gain)</label>
+            <div class="input-field">
+              <input id="Gr" type="number" placeholder="Value">
+              <select id="unitGr" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>At (Transmitter Antenna Loss)</label>
+            <div class="input-field">
+              <input id="At" type="number" placeholder="Value">
+              <select id="unitAt" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Ar (Receiver Antenna Loss)</label>
+            <div class="input-field">
+              <input id="Ar" type="number" placeholder="Value">
+              <select id="unitAr" class="unit-selector">
+                <option value="dB">dB</option>
+              </select>
+            </div>
+          </div>
+
+          <button id="calculatePtButton" class="btn" onclick="calculatePt()">
+            Calculate Pt <i class="fas fa-bolt"></i>
+          </button>
+        </div>
+
+        <div class="card">
+          <h2>Output Results</h2>
+          <div class="result-box">
+            <div class="result-label">Eb/N0 (dB)</div>
+            <div class="result-value" id="Eb_N0_display">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Pr (dB)</div>
+            <div class="result-value" id="Pr_dB_display">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Pr (dBm)</div>
+            <div class="result-value" id="Pr_dBm_display">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Pr (Watts)</div>
+            <div class="result-value" id="Pr_watts_display">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Pt (dB)</div>
+            <div class="result-value" id="Pt_dB_display">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Pt (dBm)</div>
+            <div class="result-value" id="Pt_dBm_display">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Pt (Watts)</div>
+            <div class="result-value" id="Pt_watts_display">-</div>
+          </div>
+          
+        </div>
+        
+      </div>
+       <div class="card" style="grid-column: 1 / -1;">
+  <h2>Explanation</h2>
+
+  <div id="geminiExplanationPrBox" class="result-box1">
+    <p>Click "Calculate Pr" to see the explanation of the received power calculation.</p>
+  </div>
+  <div id="geminiExplanationPr" class="result-details1"></div>
+
+  <div id="geminiExplanationPtBox" class="result-box1">
+    <p>Click "Calculate Pt" to see the explanation of the transmitted power calculation.</p>
+  </div>
+  <div id="geminiExplanationPt" class="result-details1"></div>
+</div>
+
+
+
+
+    </main>
+  </div>
+
+  <footer>
+    <div>Wireless and Mobile Network Course Project</div>
+  </footer>
+
+  <script>
+    const modulationData = {
+      '16-PSK': [
+        { EbNo: 0, BER: 0.45 }, { EbNo: 1, BER: 0.4 }, { EbNo: 2, BER: 0.35 }, { EbNo: 3, BER: 0.3 },
+        { EbNo: 4, BER: 0.25 }, { EbNo: 5, BER: 0.2 }, { EbNo: 6, BER: 0.15 }, { EbNo: 7, BER: 0.1 },
+        { EbNo: 8, BER: 0.07 }, { EbNo: 9, BER: 0.05 }, { EbNo: 10, BER: 0.03 }, { EbNo: 11, BER: 0.01 },
+        { EbNo: 12, BER: 0.009 }, { EbNo: 13, BER: 0.005 }, { EbNo: 14, BER: 0.001 }, { EbNo: 15, BER: 0.0003 },
+        { EbNo: 16, BER: 0.0001 }, { EbNo: 17, BER: 0.00004 }, { EbNo: 18, BER: 0.000003 }
+      ],
+      '8-PSK': [
+        { EbNo: 0, BER: 0.25 }, { EbNo: 1, BER: 0.2 }, { EbNo: 2, BER: 0.1 }, { EbNo: 3, BER: 0.08 },
+        { EbNo: 4, BER: 0.06 }, { EbNo: 5, BER: 0.04 }, { EbNo: 6, BER: 0.02 }, { EbNo: 7, BER: 0.01 },
+        { EbNo: 8, BER: 0.008 }, { EbNo: 9, BER: 0.005 }, { EbNo: 10, BER: 0.001 }, { EbNo: 11, BER: 0.0003 },
+        { EbNo: 12, BER: 0.00008 }, { EbNo: 13, BER: 0.00001 }, { EbNo: 14, BER: 0.000001 }, { EbNo: 15, BER: 0.0000005 }
+      ],
+      'BPSK/QPSK': [
+        { EbNo: 0, BER: 0.1 }, { EbNo: 1, BER: 0.08 }, { EbNo: 2, BER: 0.06 }, { EbNo: 3, BER: 0.04 },
+        { EbNo: 4, BER: 0.01 }, { EbNo: 5, BER: 0.008 }, { EbNo: 6, BER: 0.004 }, { EbNo: 7, BER: 0.001 },
+        { EbNo: 8, BER: 0.0002 }, { EbNo: 9, BER: 0.00003 }, { EbNo: 10, BER: 0.000003 }, { EbNo: 11, BER: 0.0000004 },
+        { EbNo: 12, BER: 0.0000001 }
+      ]
+    };
+
+   function convertToDb(value, unit) {
+  switch (unit) {
+    case "linear": // للاستخدام العام لو بدك
+      return 10 * Math.log10(value);
+    case "dBm":
+      return value - 30; // dBm to dBW
+    case "K": // الحرارة بالكلفن
+      return 10 * Math.log10(value);
+    case "C": // سيلسيوس لازم تحوليها أول لكلفن
+      return 10 * Math.log10(value + 273.15);
+    case "dB":
+      return value;
+    case "Hz":
+      return 10 * Math.log10(value);
+    case "Mbps":
+      return 10 * Math.log10(value * 1e6); // تحويل لـ Hz
+    default:
+      console.warn("Unknown unit for dB conversion:", unit);
+      return value;
+  }
+}
+
+
+   function convertToWatts(dBm) {
+  return Math.pow(10, (dBm - 30) / 10); // dBm → W
+}
+
+function calculatePr() {
+const K = 10 * Math.log10(1.38e-23); // ~ -228.6 dBW/Hz/K
+
+  // Get input values
+  let M = document.getElementById('M').value;
+  let T = document.getElementById('T').value;
+  let Nf = document.getElementById('Nf').value;
+  let R = document.getElementById('R').value;
+  let modulation = document.getElementById('modulation').value;
+  let BER = document.getElementById('BER').value;
+  let unitM = document.getElementById('unitM').value;
+  let unitT = document.getElementById('unitT').value;
+  let unitNf = document.getElementById('unitNf').value;
+  let unitR = document.getElementById('unitR').value;
+
+  if (
+    M === "" || T === "" || Nf === "" || R === "" ||
+    modulation === "" || BER === "" || unitM === "" ||
+    unitT === "" || unitNf === "" || unitR === ""
+  ) {
+    alert("Please fill in all fields for Pr calculation.");
+    return;
+  }
+
+  let Eb_N0 = getEbNo(modulation, BER);
+  if (Eb_N0 === null) {
+    alert("Invalid BER value for the selected modulation.");
+    return;
+  }
+
+  // Keep original values for explanation
+  const M_raw = parseFloat(M);
+  const T_raw = parseFloat(T);
+  const Nf_raw = parseFloat(Nf);
+  const R_raw = parseFloat(R);
+  const EbN0 = parseFloat(Eb_N0);
+  const mod = modulation;
+
+  // Convert all to dB
+  M = convertToDb(M_raw, unitM);
+  T = convertToDb(T_raw, unitT);
+  Nf = convertToDb(Nf_raw, unitNf);
+  R = convertToDb(R_raw, unitR);
+
+  const Pr_dB = M + K + T + Nf + R + EbN0;
+  const Pr_dBm = Pr_dB + 30;
+  const Pr_W = convertToWatts(Pr_dBm);
+
+  // Update UI
+  document.getElementById('Eb_N0_display').textContent = EbN0.toFixed(2);
+  document.getElementById('Pr_dB_display').textContent = Pr_dB.toFixed(2);
+  document.getElementById('Pr_dBm_display').textContent = Pr_dBm.toFixed(2);
+  document.getElementById('Pr_watts_display').textContent = Pr_W.toExponential(2);
+  document.getElementById('Pr_dB').value = Pr_dB.toFixed(2);
+
+  // Prepare prompt
+  const prompt = `
+User inputs:
+- Modulation: ${mod}
+- BER: ${BER}
+- Parameters:
+   - M (Implementation Margin): ${M_raw} ${unitM}
+   - T (Noise Temp): ${T_raw} ${unitT}
+   - Nf (Noise Figure): ${Nf_raw} ${unitNf}
+   - R (Data Rate): ${R_raw} ${unitR}
+
+Computed values:
+- Eb/N0: ${EbN0}
+- Received Power (Pr) in dB: ${Pr_dB.toFixed(2)}
+- Received Power in dBm: ${Pr_dBm.toFixed(2)}
+- Received Power in Watts: ${Pr_W.toExponential(2)}
+
+Instructions:
+1. Validate if the inputs and calculated values make sense physically.
+2. Explain step-by-step how the calculation was done.
+3. Describe what each parameter means in simple, beginner-friendly terms.
+4. Summarize the final values clearly.
+
+Output format:
+
+Validation:
+- [comments]
+
+Calculation Steps:
+- ...
+
+Summary:
+- Eb/N0: ...
+- Pr (dB): ...
+- Pr (dBm): ...
+- Pr (Watts): ...
+`;
+
+  // Send to Gemini API
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBws1CJL9Kfmta32bLWXKL3nAkuU-Ly9Iw', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }]
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const explanation = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No explanation.";
+document.getElementById('geminiExplanationPr').innerHTML = `<pre>${explanation}</pre>`;
+  })
+  .catch(err => {
+    console.error("Gemini API error:", err);
+    document.getElementById('geminiExplanationPr').innerText = "Failed to fetch explanation.";
+  });
+}
+
+    function getEbNo(modulation, BER) {
+      let modulationTable = modulationData[modulation];
+      for (let i = 0; i < modulationTable.length; i++) {
+        if (modulationTable[i].BER <= parseFloat(BER)) {
+          return modulationTable[i].EbNo;
+        }
+      }
+      return null;
+    }
+
+  function calculatePt() {
+  let Pr = document.getElementById('Pr_dB').value;
+  let Lp = document.getElementById('Lp').value;
+  let Lf = document.getElementById('Lf').value;
+  let Lo = document.getElementById('Lo').value;
+  let Fm = document.getElementById('Fm').value;
+  let Gt = document.getElementById('Gt').value;
+  let Gr = document.getElementById('Gr').value;
+  let At = document.getElementById('At').value;
+  let Ar = document.getElementById('Ar').value;
+  let unitLp = document.getElementById('unitLp').value;
+  let unitLf = document.getElementById('unitLf').value;
+  let unitLo = document.getElementById('unitLo').value;
+  let unitFm = document.getElementById('unitFm').value;
+  let unitGt = document.getElementById('unitGt').value;
+  let unitGr = document.getElementById('unitGr').value;
+  let unitAt = document.getElementById('unitAt').value;
+  let unitAr = document.getElementById('unitAr').value;
+
+  if (
+    Pr === "" || Lp === "" || Lf === "" || Lo === "" || Fm === "" || Gt === "" || Gr === "" || At === "" || Ar === "" ||
+    unitLp === "" || unitLf === "" || unitLo === "" || unitFm === "" ||
+    unitGt === "" || unitGr === "" || unitAt === "" || unitAr === ""
+  ) {
+    alert("Please fill in all fields for Pt calculation.");
+    return;
+  }
+
+  // Parse and convert values to dB
+  Pr = parseFloat(Pr);
+  const Lp_dB = convertToDb(parseFloat(Lp), unitLp);
+  const Lf_dB = convertToDb(parseFloat(Lf), unitLf);
+  const Lo_dB = convertToDb(parseFloat(Lo), unitLo);
+  const Fm_dB = convertToDb(parseFloat(Fm), unitFm);
+  const Gt_dB = convertToDb(parseFloat(Gt), unitGt);
+  const Gr_dB = convertToDb(parseFloat(Gr), unitGr);
+  const At_dB = convertToDb(parseFloat(At), unitAt);
+  const Ar_dB = convertToDb(parseFloat(Ar), unitAr);
+
+  // Link Budget Formula
+  const Pt_dB = Pr + Lp_dB + Lf_dB + Lo_dB + Fm_dB - Gt_dB - Gr_dB - At_dB - Ar_dB;
+  const Pt_dBm = Pt_dB + 30;
+  const Pt_W = convertToWatts(Pt_dBm); // Convert to watts
+
+  // Show Results
+  document.getElementById('Pt_dB_display').textContent = Pt_dB.toFixed(2);
+  document.getElementById('Pt_dBm_display').textContent = Pt_dBm.toFixed(2);
+  document.getElementById('Pt_watts_display').textContent = Pt_W.toExponential(2);
+
+  // Gemini prompt
+  const prompt = `
+User Inputs:
+
+- Pr (received power): ${Pr} dB
+- Lp (path loss): ${Lp_dB.toFixed(2)} dB
+- Lf (feeder loss): ${Lf_dB.toFixed(2)} dB
+- Lo (other losses): ${Lo_dB.toFixed(2)} dB
+- Fm (fade margin): ${Fm_dB.toFixed(2)} dB
+- Gt (transmit antenna gain): ${Gt_dB.toFixed(2)} dB
+- Gr (receive antenna gain): ${Gr_dB.toFixed(2)} dB
+- At (Tx antenna attenuation): ${At_dB.toFixed(2)} dB
+- Ar (Rx antenna attenuation): ${Ar_dB.toFixed(2)} dB
+
+Computed Transmit Power:
+- Pt (dB): ${Pt_dB.toFixed(2)} dB
+- Pt (dBm): ${Pt_dBm.toFixed(2)} dBm
+- Pt (Watts): ${Pt_W.toExponential(2)} W
+
+Instructions:
+1. Validate that the inputs are physically reasonable.
+2. Explain step-by-step how the transmit power was calculated from received power.
+3. Describe each parameter in simple, clear terms.
+4. Use friendly language for beginners in wireless link budget analysis.
+
+Output format:
+
+Validation:
+- [comments]
+
+Calculation Steps:
+- ...
+
+Summary:
+- Pt (dB): ...
+- Pt (dBm): ...
+- Pt (W): ...
+`;
+
+  // Gemini API call
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBws1CJL9Kfmta32bLWXKL3nAkuU-Ly9Iw', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }]
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const explanation = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No explanation.";
+    document.getElementById('geminiExplanationPt').innerText = explanation;
+  })
+  .catch(err => {
+    console.error("Gemini API error:", err);
+    document.getElementById('geminiExplanationPt').innerText = "Failed to fetch explanation.";
+  });
+}
+
+  </script>
+</body>
+</html>

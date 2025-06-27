@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSM Network Calculator</title>
+    <style>
+    :root {
+    --pink: #FF85A2;
+    --pink-light: #FFB6C1;
+    --pink-dark: #E75480;
+    --purple: #B399D4;
+    --white: #FFFFFF;
+    --light-gray: #F8F9FA;
+    --gray: #E9ECEF;
+    --dark-gray: #6C757D;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--light-gray);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* بدل center عشان ماتطلع طويلة كتير */
+    min-height: 100vh;
+    margin: 0;
+    padding: 50px 20px; /* مسافة أفقية خفيفة */
+}
+
+.calc {
+    text-align: center;
+    background: var(--white);
+    padding: 30px 35px; /* أقل شوية من قبل بس مريح */
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 1100px;
+    border-left: 5px solid var(--pink);
+}
+
+h1 {
+    color: var(--pink-dark);
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 2.5rem;
+}
+
+h2 {
+    color: var(--pink-dark);
+    margin-top: 30px;
+    border-bottom: 2px dashed var(--pink-light);
+    padding-bottom: 10px;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.input-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px; /* فرق بسيط عشان يبين مرتّب */
+}
+
+.input-grid input,
+.input-grid select {
+    padding: 12px 14px;
+    font-size: 16px;
+    width: 320px; /* أقل شوي من 350 عشان يريح */
+    border: 1px solid var(--pink-light);
+    border-radius: 8px;
+    background-color: var(--white);
+    transition: var(--transition);
+}
+
+.input-grid input:focus,
+.input-grid select:focus {
+    outline: none;
+    border-color: var(--pink-dark);
+    box-shadow: 0 0 8px rgba(231, 84, 128, 0.3);
+}
+
+.input-grid select {
+    color: var(--pink-dark);
+    width: 110px;
+}
+
+::placeholder {
+    color: var(--pink-light);
+    opacity: 1;
+}
+
+.calc button {
+    margin: 8px 10px;
+    padding: 12px 28px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: var(--pink);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    transition: var(--transition);
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(231, 84, 128, 0.3);
+}
+
+.calc button:hover {
+    background-color: var(--pink-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 84, 128, 0.35);
+}
+
+.button-container {
+    margin-top: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.result {
+    margin: 15px auto;
+    padding: 18px 22px;
+    background-color: var(--white);
+    border: 1px solid var(--pink-light);
+    border-radius: 8px;
+    width: calc(100% - 30px);
+    max-width: 600px;
+    font-size: 18px;
+    color: var(--pink-dark);
+    box-shadow: var(--shadow);
+    text-align: left;
+}
+
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        function getInputValues() {
+            const areaOfCityInput = document.getElementById('areaOfCity').value.trim();
+            if (!areaOfCityInput || isNaN(areaOfCityInput) || parseFloat(areaOfCityInput) <= 0) {
+                alert('Area of City must be a positive number.');
+                return null;
+            }
+            const areaOfCity = parseFloat(areaOfCityInput);
+
+            const numSubscribersInput = document.getElementById('numSubscribers').value.trim();
+            if (!numSubscribersInput || isNaN(numSubscribersInput) || !Number.isInteger(parseFloat(numSubscribersInput)) || parseInt(numSubscribersInput) <= 0) {
+                alert('Number of Subscribers must be a positive integer.');
+                return null;
+            }
+            const numSubscribers = parseInt(numSubscribersInput);
+            
+            const avgCallsPerDayInput = document.getElementById('avgCallsPerDay').value.trim();
+            if (!avgCallsPerDayInput || isNaN(avgCallsPerDayInput) || parseInt(avgCallsPerDayInput) <= 0) {
+                alert('Average Calls per Subscriber per Day must be a positive integer.');
+                return null;
+            }
+            const avgCallsPerDay = parseInt(avgCallsPerDayInput);
+
+            const avgCallDurationInput = document.getElementById('avgCallDuration').value.trim();
+            if (!avgCallDurationInput || isNaN(avgCallDurationInput) || parseFloat(avgCallDurationInput) <= 0) {
+                alert('Average Call Duration must be a positive number.');
+                return null;
+            }
+            const avgCallDuration = parseFloat(avgCallDurationInput);
+
+            return {
+                areaOfCity: areaOfCity,
+                numSubscribers: numSubscribers,
+                avgCallsPerDay: avgCallsPerDay,
+                avgCallDuration: avgCallDuration,
+                callDropProbability: parseFloat(document.getElementById('callDropProbability').value),
+                sir: parseFloat(document.getElementById('sir').value),
+                referencePower: parseFloat(document.getElementById('referencePower').value),
+                pathLossExponent: parseFloat(document.getElementById('pathLossExponent').value),
+                receiverSensitivity: parseFloat(document.getElementById('receiverSensitivity').value),
+                referenceDistance: parseFloat(document.getElementById('referenceDistance').value),
+                sirUnit: document.getElementById('sirUnit').value,
+                referencePowerUnit: document.getElementById('referencePowerUnit').value
+            };
+        }
+
+        function convertDbToLinear(value, unit) {
+            return unit === 'dB' ? Math.pow(10, value / 10) : value;
+        }
+
+        function calculateMaxDistance() {
+            const { referencePower, pathLossExponent, referenceDistance, sir, sirUnit, referencePowerUnit, receiverSensitivity } = getInputValues();
+            let powerAtRefDistance;
+            if (referencePowerUnit === 'dB') {
+                powerAtRefDistance = convertDbToLinear(referencePower, 'dB');
+            } else {
+                powerAtRefDistance = referencePower;
+            }
+            const distance = referenceDistance / Math.pow((receiverSensitivity / powerAtRefDistance), 1 / pathLossExponent);
+
+            document.getElementById('result1').innerText = 'Maximum Distance: ' + distance.toFixed(3) + ' meters';
+            return distance;
+        }
+
+        function calculateMaxCellSize() {
+            const maxDistance = calculateMaxDistance();
+            const cellSize = 3 * Math.sqrt(3) * Math.pow(maxDistance, 2) / 2;
+
+            document.getElementById('result2').innerText = 'Maximum Cell Size: ' + cellSize.toFixed(2) + ' square meters';
+            return cellSize;
+        }
+
+        function calculateNumberOfCells() {
+            const { areaOfCity } = getInputValues();
+            const maxCellSize = calculateMaxCellSize();
+            const numberOfCells = areaOfCity / maxCellSize;
+
+            document.getElementById('result3').innerText = 'Number of Cells in Service Area: ' + Math.ceil(numberOfCells);
+            return Math.ceil(numberOfCells);
+        }
+
+        function calculateTrafficLoadWholeSystem() {
+            const { numSubscribers, avgCallsPerDay, avgCallDuration } = getInputValues();
+            const totalTraffic = (numSubscribers * avgCallsPerDay * avgCallDuration) / (24*60);
+
+            document.getElementById('result4').innerText = 'Traffic Load in Whole System: ' + totalTraffic.toFixed(2) + ' Erlangs';
+            return totalTraffic;
+        }
+
+        function calculateTrafficLoadEachCell() {
+            const totalTraffic = calculateTrafficLoadWholeSystem();
+            const numberOfCells = calculateNumberOfCells();
+            const trafficPerCell = totalTraffic / numberOfCells;
+
+            document.getElementById('result5').innerText = 'Traffic Load in Each Cell: ' + trafficPerCell.toFixed(2) + ' Erlangs';
+            return trafficPerCell;
+        }
+
+        function calculateCellsPerCluster() {
+            const { sir, pathLossExponent, sirUnit } = getInputValues();
+            let sirLinear;
+            if (sirUnit === 'dB') {
+                 sirLinear = convertDbToLinear(sir, 'dB');
+            } else {
+                sirLinear = sir;
+            }
+            const coChannelInterferenceCells = Math.round(Math.pow((sirLinear * 6), (2 / pathLossExponent)) / 3);
+            const number = coChannelInterferenceCells + 1;
+
+            document.getElementById('result6').innerText = 'Number of Cells in Each Cluster: ' + number;
+            return number;
+        }
+
+        function calculateMinCarriers() {
+            const trafficPerCell = calculateTrafficLoadEachCell();
+            const numberOfCell = calculateCellsPerCluster();
+            const numTimeslots = 8;
+            const { callDropProbability } = getInputValues();
+            const carriers = trafficPerCell / (numTimeslots * (1 - callDropProbability));
+            const carriers1 = Math.ceil(carriers) * numberOfCell;
+
+            document.getElementById('result7').innerText = 'Minimum Number of Carriers (QoS 0.02): ' + (carriers1) +' Carriers';
+            return (carriers1);
+        }
+
+        function calculateMinCarriersNewQoS() {
+            const trafficPerCell = calculateTrafficLoadEachCell();
+            const numberOfCell = calculateCellsPerCluster();
+            const numTimeslots = 8;
+            const callDropProbability = 0.05;
+            const carriers = trafficPerCell / (numTimeslots * (1 - callDropProbability));
+            const carriers1 = Math.ceil(carriers) * numberOfCell;
+
+            document.getElementById('result8').innerText = 'Minimum Number of Carriers with QoS 0.05: ' + Math.ceil(carriers1) +' Carriers';
+            return Math.ceil(carriers1);
+        }
+        function explainSystemCalculations() {
+
+    const inputs = getInputValues();
+    if (!inputs) return;
+
+    const prompt = `
+The following are user inputs:
+- Area: ${inputs.areaOfCity} square meters
+- Number of Subscribers: ${inputs.numSubscribers}
+- Calls per Subscriber: ${inputs.avgCallsPerDay}
+- Avg Call Duration: ${inputs.avgCallDuration} minutes
+- Path Loss Exponent: ${inputs.pathLossExponent}
+- Receiver Sensitivity: ${inputs.receiverSensitivity} W
+- Power at Reference: ${inputs.referencePower} ${inputs.referencePowerUnit}
+- Reference Distance: ${inputs.referenceDistance} meters
+- SIR: ${inputs.sir} ${inputs.sirUnit}
+- Call Drop Probability: ${inputs.callDropProbability}
+
+Instructions:
+1. Briefly explain what each stage (distance, cell size, traffic, SIR) represents.
+2. Describe how each affects overall system performance.
+3. Use simple English for a beginner in wireless communication.
+4. Perform the following calculations step-by-step:
+- Max Distance
+- Max Cell Size
+- Number of Cells
+- Total Traffic in the System
+- Traffic per Cell
+- Cells per Cluster
+- Carriers Required (QoS 0.02)
+- Carriers Required (QoS 0.05)
+
+Output format:
+Validation:
+- [comments]
+
+Methodology:
+- [explanation of each step]
+
+Summary:
+- Max Distance: ...
+- Cell Size: ...
+- Total Traffic: ...
+- Carriers Required (0.02 QoS): ...
+- Carriers Required (0.05 QoS): ...
+`;
+
+    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBws1CJL9Kfmta32bLWXKL3nAkuU-Ly9Iw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            contents: [
+                {
+                    parts: [
+                        {
+                            text: prompt
+                        }
+                    ]
+                }
+            ]
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        const explanation = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No explanation.";
+        document.getElementById('explanation').innerHTML = `
+            <div class="result-box" style="grid-column: span 2;">
+              <div class="result-label">📘 AI Explanation</div>
+              <div class="result-value" style="white-space: pre-wrap;">${explanation}</div>
+            </div>
+        `;
+    })
+    .catch(err => {
+        console.error("Gemini API error:", err);
+        document.getElementById('explanation').innerText = "Failed to load explanation from AI.";
+    });
+}
+
+        
+
+    </script>
+</head>
+<body>
+    <div class="calc">
+        <h1>Cellular System Calculator</h1>
+        <div class="input-grid">
+            <input type="text" id="areaOfCity" placeholder="Area of City in m²">
+            <input type="text" id="numSubscribers" placeholder="Number of Subscribers">
+            <input type="text" id="avgCallsPerDay" placeholder="Average Calls per Subscriber per Day">
+            <input type="text" id="avgCallDuration" placeholder="Average Call Duration in minutes">
+            <input type="text" id="callDropProbability" placeholder="Call Drop Probability">
+          
+            <div>
+                <input type="text" id="sir" placeholder="Minimum Signal-to-Interference Ratio (SIR)">
+                <select id="sirUnit">
+                    <option value="dB">dB</option>
+                </select>
+            </div>
+            <div>
+                <input type="text" id="referencePower" placeholder="Power at Reference Distance">
+                <select id="referencePowerUnit">
+                    <option value="dB">dB</option>
+                </select>
+            </div>
+            <input type="text" id="pathLossExponent" placeholder="Path Loss Exponent">
+            <input type="text" id="receiverSensitivity" placeholder="Receiver Sensitivity in watts (e.g., 7e-6)">
+            <input type="text" id="referenceDistance" placeholder="Reference Distance in meters">
+        </div>
+        <div class="button-container">
+            <button onclick="calculateMaxDistance()">Calculate Maximum Distance</button>
+            <button onclick="calculateMaxCellSize()">Calculate Maximum Cell Size</button>
+            <button onclick="calculateNumberOfCells()">Calculate Number of Cells</button>
+            <button onclick="calculateTrafficLoadWholeSystem()">Calculate Traffic Load in Whole System</button>
+            <button onclick="calculateTrafficLoadEachCell()">Calculate Traffic Load in Each Cell</button>
+            <button onclick="calculateCellsPerCluster()">Calculate Cells Per Cluster</button>
+            <button onclick="calculateMinCarriers()">Calculate Minimum Carriers (QoS 0.02)</button>
+            <button onclick="calculateMinCarriersNewQoS()">Calculate Minimum Carriers (QoS 0.05)</button>
+            <button onclick="explainSystemCalculations()">Explain Calculations</button>
+
+        </div>
+        <h2>Results:</h2>
+        <div id="results">
+            <div id="result1" class="result"></div>
+            <div id="result2" class="result"></div>
+            <div id="result3" class="result"></div>
+            <div id="result4" class="result"></div>
+            <div id="result5" class="result"></div>
+            <div id="result6" class="result"></div>
+            <div id="result7" class="result"></div>
+            <div id="result8" class="result"></div>
+            <div id="explanation" class="result"></div>
+        </div>
+    </div>
+</body>
+</html>

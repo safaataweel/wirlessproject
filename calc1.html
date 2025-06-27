@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireless Communication System Calculator</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --pink: #FF85A2;
+      --pink-light: #FFB6C1;
+      --pink-dark: #E75480;
+      --purple: #B399D4;
+      --white: #FFFFFF;
+      --light-gray: #F8F9FA;
+      --gray: #E9ECEF;
+      --dark-gray: #6C757D;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background-color: var(--light-gray);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--pink-dark);
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--pink-dark);
+    }
+
+    .subtitle {
+      color: var(--dark-gray);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+      font-weight: 400;
+    }
+
+    .card {
+      background-color: var(--white);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--pink);
+      transition: var(--transition);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(255, 133, 162, 0.15);
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark-gray);
+    }
+
+    .input-field {
+      display: flex;
+      background-color: var(--gray);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #ddd;
+    }
+
+    input, select {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      background: var(--white);
+      border: none;
+      color: #333;
+      font-size: 1rem;
+      outline: none;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    select {
+      border-left: 1px solid #ddd;
+      max-width: 100px;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E75480'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+    }
+
+    .btn {
+      background-color: var(--pink);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      background-color: var(--pink-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(231, 84, 128, 0.3);
+    }
+
+    .btn i {
+      transition: transform 0.2s ease;
+    }
+
+    .btn:hover i {
+      transform: translateX(3px);
+    }
+
+    .results-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .result-box {
+      background-color: var(--gray);
+      border-radius: 8px;
+      padding: 1.25rem;
+      border-left: 3px solid var(--pink);
+    }
+
+    .result-label {
+      font-size: 0.9rem;
+      color: var(--dark-gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .result-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--pink-dark);
+    }
+
+    .placeholder {
+      color: var(--dark-gray);
+      font-style: italic;
+      padding: 1rem;
+      text-align: center;
+      grid-column: span 2;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: auto;
+      color: var(--dark-gray);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--gray);
+      font-weight: 400;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .results-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .placeholder {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Wireless Communication System Calculator</h1>
+      <p class="subtitle">Compute the data rates at different processing blocks in a wireless communication system</p>
+    </header>
+
+    <main>
+      <div class="card">
+        <h2>System Parameters</h2>
+        <div class="input-group">
+          <label for="bandwidth">Signal Bandwidth (B)</label>
+          <div class="input-field">
+            <input type="number" id="bandwidth" placeholder="e.g., 4" min="0" step="0.01">
+            <select id="bandwidthUnit">
+              <option value="Hz">Hz</option>
+              <option value="kHz">kHz</option>
+              <option value="MHz" selected>MHz</option>
+              <option value="GHz">GHz</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="quantizerBits">Quantizer Bits (n)</label>
+          <div class="input-field">
+            <input type="number" id="quantizerBits" placeholder="e.g., 8" min="1" max="32" step="1">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="sourceCompression">Source Compression Ratio (CR)</label>
+          <div class="input-field">
+            <input type="number" id="sourceCompression" step="0.01" placeholder="e.g., 0.25" min="0.01" max="1">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="channelCodeRate">Channel EnCoder Rate (R)</label>
+          <div class="input-field">
+            <input type="number" id="channelCodeRate" step="0.01" placeholder="e.g., 0.5" min="0.01" max="1">
+          </div>
+        </div>
+        <button class="btn" onclick="calculateRates()">
+          Calculate Rates <i class="fas fa-calculator"></i>
+        </button>
+      </div>
+
+      <div class="card">
+        <h2>Output Rates</h2>
+        <div class="results-container" id="results">
+          <div class="placeholder">Please enter parameters and click Calculate</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <div>Wireless and Mobile Network Course Project</div>
+  </footer>
+
+  <script>
+    function convertToHz(value, unit) {
+      const multipliers = {
+        'Hz': 1,
+        'kHz': 1e3,
+        'MHz': 1e6,
+        'GHz': 1e9
+      };
+      return value * (multipliers[unit] || 1);
+    }
+
+    function formatRate(rate) {
+      if (rate >= 1e9) {
+        return `${(rate / 1e9).toFixed(2)} Gbps`;
+      } else if (rate >= 1e6) {
+        return `${(rate / 1e6).toFixed(2)} Mbps`;
+      } else if (rate >= 1e3) {
+        return `${(rate / 1e3).toFixed(2)} kbps`;
+      }
+      return `${rate.toFixed(2)} bps`;
+    }
+
+    function calculateRates() {
+      // Get input values
+      const bw = parseFloat(document.getElementById('bandwidth').value);
+      const unit = document.getElementById('bandwidthUnit').value;
+      const qBits = parseInt(document.getElementById('quantizerBits').value);
+      const srcRatio = parseFloat(document.getElementById('sourceCompression').value);
+      const codeRate = parseFloat(document.getElementById('channelCodeRate').value);
+
+      // Validate inputs
+      if (isNaN(bw) || bw <= 0) {
+        alert("Please enter a valid positive bandwidth value");
+        return;
+      }
+      if (isNaN(qBits) || qBits < 1 || qBits > 32) {
+        alert("Quantizer bits must be between 1 and 32");
+        return;
+      }
+      if (isNaN(srcRatio) || srcRatio <= 0 || srcRatio > 1) {
+        alert("Source compression ratio must be between 0.01 and 1");
+        return;
+      }
+      if (isNaN(codeRate) || codeRate <= 0 || codeRate > 1) {
+        alert("Channel code rate must be between 0.01 and 1");
+        return;
+      }
+
+      // Convert bandwidth to Hz
+      const bwHz = convertToHz(bw, unit);
+
+      // Calculate rates at each stage
+      const samplingRate = 2 * bwHz; // Nyquist rate
+      const quantizationLevels = Math.pow(2, qBits);
+      const rawBitRate = samplingRate * qBits;
+      const sourceEncodedRate = rawBitRate * srcRatio;
+      const channelEncodedRate = sourceEncodedRate / codeRate;
+      const interleaverRate = channelEncodedRate; // No rate change
+      const burstFormattedRate = channelEncodedRate; // No rate change
+
+      // Prepare results for display
+      const results = [
+        { label: 'Sampler Output', description: 'Sampling Rate (Nyquist)', value: samplingRate, unit: 'samples/sec' },
+        { label: 'Quantizer Output', description: 'Quantization Levels', value: quantizationLevels, unit: 'levels' },
+        { label: 'Source Encoder Output', description: 'Compressed Bit Rate', value: sourceEncodedRate, unit: 'bits/sec' },
+        { label: 'Channel Encoder Output', description: 'Encoded Bit Rate', value: channelEncodedRate, unit: 'bits/sec' },
+        { label: 'Interleaver Output', description: 'Interleaved Bit Rate', value: interleaverRate, unit: 'bits/sec' },
+        { label: 'Burst Formatter Output', description: 'Formatted Bit Rate', value: burstFormattedRate, unit: 'bits/sec' }
+      ];
+
+      // Display results
+      document.getElementById('results').innerHTML = results.map(result => `
+        <div class="result-box">
+          <div class="result-label">${result.label}</div>
+          <div class="result-value">
+            ${result.unit === 'levels' ? 
+              result.value.toLocaleString() + ' levels' : 
+              formatRate(result.value)}
+          </div>
+          <div style="font-size: 0.8rem; color: var(--dark-gray);">${result.description}</div>
+        </div>
+      `).join('');
+      const prompt = `
+The following are user inputs:
+- Bandwidth: ${bw} ${unit}
+- Quantizer Bits: ${qBits}
+- Source Compression Ratio: ${srcRatio}
+- Channel Code Rate: ${codeRate}
+
+Instructions:
+1. Validate the inputs (e.g., is the compression ratio logical?).
+2. Perform the following calculations **step-by-step**:
+   - Convert Bandwidth to Hz
+   - Sampling rate (fs) = 2 * bandwidth
+   - Quantization levels (L) = 2 ^ quantizer bits
+   - Input bit rate (Rb) = fs * quantizer bits
+   - Source encoded rate (Rsc) = Rb * compression ratio
+   - Channel encoded rate (Rce) = Rsc / channel code rate
+   - Interleaver output = Rce
+   - Burst formatted rate = Rce
+3. For each stage (sampling, quantization, source encoding, channel encoding), briefly explain what it does and how it affects the data rate.
+Use clear, friendly, and concise English. Target explanation for a beginner in wireless systems.
+
+Output format:
+Validation:
+- [comments here]
+
+Methodology:
+- [step by step calculations and logic]
+
+Result Summary:
+- Sampler Rate: ...
+- Quantizer Levels: ...
+- Source Encoder Output: ...
+- Channel Encoder Output: ...
+`;
+
+fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBws1CJL9Kfmta32bLWXKL3nAkuU-Ly9Iw', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    contents: [
+      {
+        parts: [
+          {
+            text: prompt
+          }
+        ]
+      }
+    ]
+  })
+})
+.then(res => res.json())
+.then(data => {
+  const explanation = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No explanation.";
+  document.getElementById('results').innerHTML += `
+    <div class="result-box" style="grid-column: span 2;">
+      <div class="result-label">📘 Methodology & Explanation</div>
+      <div class="result-value" style="white-space: pre-wrap;">${explanation}</div>
+    </div>
+  `;
+})
+.catch(err => {
+  console.error("Gemini failed:", err);
+  alert("Failed to fetch detailed explanation.");
+});
+    }
+  </script>
+</body>
+</html>
