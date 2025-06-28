@@ -415,58 +415,37 @@
     </div>
   `;
 
-  // Generate prompt for Gemini explanation
-  const prompt = `
-The user provided the following inputs:
+ const prompt = `
+The user provided the following calculated results from a wireless network simulation:
 
-- Bandwidth: ${bwRaw} ${bwUnit}
-- Subcarrier Spacing: ${spacingRaw} ${spacingUnit}
-- Number of Symbols per Block: ${symbols}
-- Duration of Block: ${durationRaw} ${durationUnit}
-- QAM order: ${qam}
-- Number of Blocks: ${blocks}
-- Desired Output Unit for rate: ${resultUnit}
+- Bits per Resource Element (RE): ${bitsPerRE} bits
+- Bits per OFDM Symbol: ${bitsPerSymbol} bits
+- Bits per Resource Block (RB): ${bitsPerRB} bits
+- Data Rate per RB: ${dataRatePerRB} kbps
+- Max Transmission Rate: ${maxTransmissionRate} Mbps
+- Spectral Efficiency: ${spectralEfficiency} bps/Hz
 
 Instructions:
 
-1. Validate the inputs:
-   - Check if bandwidth is divisible by subcarrier spacing.
-   - Check if QAM is a power of 2.
-   - Check that all numbers are positive and reasonable.
-   - Mention if any input is invalid or suspicious.
+1. Do NOT perform any new calculations.
+2. For each result, explain clearly and simply:
+   - What the value means.
+   - Why this value is important in wireless communication.
+   - Whether the value seems realistic or not.
+   - What this tells us about the network’s overall performance.
 
-2. Calculate step-by-step:
-   - Bits per Resource Element (reBits) = log2(QAM)
-   - Number of Subcarriers = Bandwidth / Subcarrier Spacing
-   - Bits per OFDM Symbol = subcarriers * reBits
-   - Bits per Resource Block = bits per symbol * number of symbols
-   - Total bits = bits per block * number of blocks
-   - Max transmission rate = total bits / duration
-   - Convert max transmission rate to the desired output unit.
-
-3. For each calculation step, provide a brief explanation of what it represents.
-
-4. Explain the methodology in simple, clear, and friendly language targeted for beginners in wireless communication.
-
-5. Summarize the final results clearly with units.
+3. Use simple language suitable for beginners in wireless networks.
 
 Output format:
 
-Validation:
-- [validation comments]
-
-Calculations and Methodology:
-- Step 1: ...
-- Step 2: ...
-- ...
-
-Result Summary:
+📘 Explanation:
 - Bits per Resource Element: ...
 - Bits per OFDM Symbol: ...
 - Bits per Resource Block: ...
-- Max Transmission Rate: ... ${resultUnit}
+- Data Rate per RB: ...
+- Max Transmission Rate: ...
+- Spectral Efficiency: ...
 `;
-
   // Gemini API call for detailed explanation
   try {
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBws1CJL9Kfmta32bLWXKL3nAkuU-Ly9Iw', {
