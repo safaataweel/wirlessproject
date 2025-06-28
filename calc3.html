@@ -596,37 +596,41 @@ const K = 10 * Math.log10(1.38e-23); // ~ -228.6 dBW/Hz/K
   document.getElementById('Pr_watts_display').textContent = Pr_W.toExponential(2);
   document.getElementById('Pr_dB').value = Pr_dB.toFixed(2);
 
-  // Prepare prompt
-  const prompt = `
+ const prompt = `
 User inputs:
 - Modulation: ${mod}
 - BER: ${BER}
 - Parameters:
    - M (Implementation Margin): ${M_raw} ${unitM}
-   - T (Noise Temp): ${T_raw} ${unitT}
+   - T (Noise Temperature): ${T_raw} ${unitT}
    - Nf (Noise Figure): ${Nf_raw} ${unitNf}
    - R (Data Rate): ${R_raw} ${unitR}
 
 Computed values:
-- Eb/N0: ${EbN0}
+- Eb/N0 (Energy per bit to noise power spectral density ratio): ${EbN0}
 - Received Power (Pr) in dB: ${Pr_dB.toFixed(2)}
 - Received Power in dBm: ${Pr_dBm.toFixed(2)}
 - Received Power in Watts: ${Pr_W.toExponential(2)}
 
 Instructions:
-1. Validate if the inputs and calculated values make sense physically.
-2. Explain step-by-step how the calculation was done.
-3. Describe what each parameter means in simple, beginner-friendly terms.
-4. Summarize the final values clearly.
+1. Validate if these inputs and results are physically reasonable.
+2. Explain clearly step-by-step how the calculation was done, without doing new calculations.
+3. Describe the meaning of each input parameter and computed value in simple terms suitable for beginners.
+4. Summarize the key final values clearly.
 
 Output format:
 
 Validation:
-- [comments]
+- [Comments on inputs and results]
 
 Calculation Steps:
-- ...
+- [Step-by-step explanation of the calculation]
 
+ For each result, explain clearly and simply:
+   - What the value means.
+   - Why this value is important in wireless communication.
+   - Whether the value seems realistic or not.
+   - What this tells us about the network’s overall performance.
 Summary:
 - Eb/N0: ...
 - Pr (dB): ...
@@ -713,18 +717,18 @@ document.getElementById('geminiExplanationPr').innerHTML = `<pre>${explanation}<
   document.getElementById('Pt_watts_display').textContent = Pt_W.toExponential(2);
 
   // Gemini prompt
-  const prompt = `
+const prompt = `
 User Inputs:
 
-- Pr (received power): ${Pr} dB
-- Lp (path loss): ${Lp_dB.toFixed(2)} dB
-- Lf (feeder loss): ${Lf_dB.toFixed(2)} dB
-- Lo (other losses): ${Lo_dB.toFixed(2)} dB
-- Fm (fade margin): ${Fm_dB.toFixed(2)} dB
-- Gt (transmit antenna gain): ${Gt_dB.toFixed(2)} dB
-- Gr (receive antenna gain): ${Gr_dB.toFixed(2)} dB
-- At (Tx antenna attenuation): ${At_dB.toFixed(2)} dB
-- Ar (Rx antenna attenuation): ${Ar_dB.toFixed(2)} dB
+- Pr (Received Power): ${Pr} dB
+- Lp (Path Loss): ${Lp_dB.toFixed(2)} dB
+- Lf (Feeder Loss): ${Lf_dB.toFixed(2)} dB
+- Lo (Other Losses): ${Lo_dB.toFixed(2)} dB
+- Fm (Fade Margin): ${Fm_dB.toFixed(2)} dB
+- Gt (Transmit Antenna Gain): ${Gt_dB.toFixed(2)} dB
+- Gr (Receive Antenna Gain): ${Gr_dB.toFixed(2)} dB
+- At (Tx Antenna Attenuation): ${At_dB.toFixed(2)} dB
+- Ar (Rx Antenna Attenuation): ${Ar_dB.toFixed(2)} dB
 
 Computed Transmit Power:
 - Pt (dB): ${Pt_dB.toFixed(2)} dB
@@ -732,10 +736,16 @@ Computed Transmit Power:
 - Pt (Watts): ${Pt_W.toExponential(2)} W
 
 Instructions:
-1. Validate that the inputs are physically reasonable.
-2. Explain step-by-step how the transmit power was calculated from received power.
-3. Describe each parameter in simple, clear terms.
-4. Use friendly language for beginners in wireless link budget analysis.
+1. Validate if all inputs and outputs are physically reasonable for a wireless link.
+2. Explain clearly, step-by-step, how the transmit power Pt was computed from received power and all losses/gains.
+3. Describe the meaning of each input parameter in simple beginner-friendly terms.
+4. Provide a summary of the key results.
+
+ For each result, explain clearly and simply:
+   - What the value means.
+   - Why this value is important in wireless communication.
+   - Whether the value seems realistic or not.
+   - What this tells us about the network’s overall performance.
 
 Output format:
 
@@ -748,7 +758,7 @@ Calculation Steps:
 Summary:
 - Pt (dB): ...
 - Pt (dBm): ...
-- Pt (W): ...
+- Pt (Watts): ...
 `;
 
   // Gemini API call
