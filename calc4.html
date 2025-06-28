@@ -221,7 +221,7 @@ h2 {
             const { numSubscribers, avgCallsPerDay, avgCallDuration } = getInputValues();
             const totalTraffic = (numSubscribers * avgCallsPerDay * avgCallDuration) / (24*60);
 
-            document.getElementById('result4').innerText = 'Traffic Load in Whole System: ' + totalTraffic.toFixed(2) + ' Erlangs';
+            document.getElementById('result4').innerText = 'Traffic Load in Whole System: ' + totalTraffic.toFixed(5) + ' Erlangs';
             return totalTraffic;
         }
 
@@ -230,7 +230,7 @@ h2 {
             const numberOfCells = calculateNumberOfCells();
             const trafficPerCell = totalTraffic / numberOfCells;
 
-            document.getElementById('result5').innerText = 'Traffic Load in Each Cell: ' + trafficPerCell.toFixed(2) + ' Erlangs';
+            document.getElementById('result5').innerText = 'Traffic Load in Each Cell: ' + trafficPerCell.toFixed(5) + ' Erlangs';
             return trafficPerCell;
         }
 
@@ -276,18 +276,27 @@ h2 {
 
     const inputs = getInputValues();
     if (!inputs) return;
+const maxDistance = document.getElementById('result1').innerText.split(': ')[1] || '';
+const maxCellSize = document.getElementById('result2').innerText.split(': ')[1] || '';
+const numberOfCells = document.getElementById('result3').innerText.split(': ')[1] || '';
+const totalTraffic = document.getElementById('result4').innerText.split(': ')[1] || '';
+const trafficPerCell = document.getElementById('result5').innerText.split(': ')[1] || '';
+const cellsPerCluster = document.getElementById('result6').innerText.split(': ')[1] || '';
+const carriersQoS002 = document.getElementById('result7').innerText.split(': ')[1] || '';
+const carriersQoS005 = document.getElementById('result8').innerText.split(': ')[1] || '';
 
    const prompt = `
 The following are calculated results from a wireless network simulation:
 
-- Max Distance: 9.653 meters
-- Max Cell Size: 242.11 square meters
-- Number of Cells: 2066
-- Total Traffic: 52.08 Erlangs
-- Traffic per Cell: 0.03 Erlangs
-- Cells per Cluster: 8
-- Carriers Required (QoS 0.02): 8
-- Carriers Required (QoS 0.05): 8
+- Max Distance: ${maxDistance}
+- Max Cell Size: ${maxCellSize}
+- Number of Cells: ${numberOfCells}
+- Total Traffic: ${totalTraffic}
+- Traffic per Cell: ${trafficPerCell}
+- Cells per Cluster: ${cellsPerCluster}
+- Carriers Required (QoS 0.02): ${carriersQoS002}
+- Carriers Required (QoS 0.05): ${carriersQoS005}
+
 
 🔍 Instructions:
 1. For each result, explain:
