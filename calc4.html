@@ -277,77 +277,69 @@ h2 {
     const inputs = getInputValues();
     if (!inputs) return;
 
-    const prompt = `
-The following are user inputs:
-- Area: ${inputs.areaOfCity} square meters
-- Number of Subscribers: ${inputs.numSubscribers}
-- Calls per Subscriber: ${inputs.avgCallsPerDay}
-- Avg Call Duration: ${inputs.avgCallDuration} minutes
-- Path Loss Exponent: ${inputs.pathLossExponent}
-- Receiver Sensitivity: ${inputs.receiverSensitivity} W
-- Power at Reference: ${inputs.referencePower} ${inputs.referencePowerUnit}
-- Reference Distance: ${inputs.referenceDistance} meters
-- SIR: ${inputs.sir} ${inputs.sirUnit}
-- Call Drop Probability: ${inputs.callDropProbability}
+   const prompt = `
+The following are calculated results from a wireless network simulation:
 
-Instructions:
-1. Briefly explain what each stage (distance, cell size, traffic, SIR) represents.
-2. Describe how each affects overall system performance.
-3. Use simple English for a beginner in wireless communication.
-4. Perform the following calculations step-by-step:
-- Max Distance
-- Max Cell Size
-- Number of Cells
-- Total Traffic in the System
-- Traffic per Cell
-- Cells per Cluster
-- Carriers Required (QoS 0.02)
-- Carriers Required (QoS 0.05)
+- Max Distance: 9.653 meters
+- Max Cell Size: 242.11 square meters
+- Number of Cells: 2066
+- Total Traffic: 52.08 Erlangs
+- Traffic per Cell: 0.03 Erlangs
+- Cells per Cluster: 8
+- Carriers Required (QoS 0.02): 8
+- Carriers Required (QoS 0.05): 8
+
+🔍 Instructions:
+1. For each result, explain:
+   - What the value means.
+   - Why it's important.
+   - Is the value realistic?
+   - What it tells us about the network's performance.
+
+2. Avoid performing your own calculations. Focus only on interpreting these results.
+
+3. Write the explanation clearly for a beginner in wireless networks.
 
 Output format:
-Validation:
-- [comments]
 
-Methodology:
-- [explanation of each step]
-
-Summary:
+📘 Explanation:
 - Max Distance: ...
-- Cell Size: ...
-- Total Traffic: ...
-- Carriers Required (0.02 QoS): ...
-- Carriers Required (0.05 QoS): ...
+- Max Cell Size: ...
+- Number of Cells: ...
+...
 `;
 
-    fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBws1CJL9Kfmta32bLWXKL3nAkuU-Ly9Iw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            contents: [
-                {
-                    parts: [
-                        {
-                            text: prompt
-                        }
-                    ]
-                }
-            ]
-        })
+
+fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBws1CJL9Kfmta32bLWXKL3nAkuU-Ly9Iw', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        contents: [
+            {
+                parts: [
+                    {
+                        text: prompt
+                    }
+                ]
+            }
+        ]
     })
-    .then(res => res.json())
-    .then(data => {
-        const explanation = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No explanation.";
-        document.getElementById('explanation').innerHTML = `
-            <div class="result-box" style="grid-column: span 2;">
-              <div class="result-label">📘 AI Explanation</div>
-              <div class="result-value" style="white-space: pre-wrap;">${explanation}</div>
-            </div>
-        `;
-    })
-    .catch(err => {
-        console.error("Gemini API error:", err);
-        document.getElementById('explanation').innerText = "Failed to load explanation from AI.";
-    });
+})
+.then(res => res.json())
+.then(data => {
+    const explanation = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No explanation.";
+    document.getElementById('explanation').innerHTML = `
+        <div class="result-box" style="grid-column: span 2;">
+          <div class="result-label">📘 AI Explanation</div>
+          <div class="result-value" style="white-space: pre-wrap;">${explanation}</div>
+        </div>
+    `;
+})
+.catch(err => {
+    console.error("Gemini API error:", err);
+    document.getElementById('explanation').innerText = "Failed to load explanation from AI.";
+});
+
 }
 
         
